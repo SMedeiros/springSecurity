@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns="http://www.springframework.org/schema/security" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+			http://www.springframework.org/schema/security
+			http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+			
+			<!-- <global-method-security secured-annotations="enabled" />
+			 -->
+			 
+			 <!-- 
+			 	No spring security 3.1 a propriedade access-denied-page da tag http foi depreciado favorecendo o elemento acess-denied-handler.
+			  -->
+			<http auto-config="true" use-expressions="true"  >
+				<!-- Todos podem acessar, o wildcard permitAll avisa ao spring security que qualquer um pode acessar essa página. -->
+				<intercept-url pattern="/" access="permitAll" />
+				<intercept-url pattern="/common" access="permitAll" />
+				
+				<!-- somente alguém com a autoridade de ROLE_ADMIN pode acessar -->
+				<intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')" />
+						 
+				<access-denied-handler error-page="/denied" />
+			
+			<!-- Configuração dos atributos do formulário:
+				 login-page => define a página de login do usúario nocao a página inicial (/),
+				 
+				 authentication-failure-url => define url que será usada em caso de erro, nesse meu caso o atributo error,
+				 é recebido pelo método br.com.newsoft.security.controller.LoginController.getLoginPage() e,
+				 dependendo do seu valor ele injeta algo na view diferente, resultando em algo mais amigável para o usuário.
+			 	
+			 	 default-target-url => define a url para o qual deverá redirecionar o usúario quando o login ocorrer com sucesso.
+			 
+			 	 login-processing-check => define a url que validará o usário que esta tentando se logar, se não for definido o padrão é
+			 	 /j_spring_security_check, ele deve ser chamado na action do formulário de login.
+			 	 
+			 	 password-parameter => define o id do elemento que o spring deve chamar do formulario na view referente ao password do usuario. 
+			 	 na view o input do password deve ter o id setado com o nome da configuração atual, se não for definido o padrão é j_password.
+			 	 
+			 	 username-parameter => define o id do elemento que o spring deve chamar do formulario na view referente ao username do usuario. 
+			 	 na view o input do username deve ter o id setado com o nome da configuração atual, se não for definido o padrão é j_username.
+			 -->
+				<form-login 
+					login-page="/"
+					authentication-failure-url="/?error=true"
+					default-target-url="/admin" login-processing-url="/check" 
+					password-parameter="password" username-parameter="username" />
+				
+				<logout invalidate-session="true" logout-url="/logout" logout-success-url="/" />
+			
+			</http>
+			
+			<authentication-manager>
+				<!-- Peovider de autenticação -->
+				<authentication-provider>
+				<!-- <password-encoder hash="plaintext" base64="true">
+					<salt-source  />
+				</password-encoder> -->
+					<!-- Nesse caso mais simples eu preferi definir os usuarios no xml puro msm(não é muito usado no mundo real mais serve para exemplificar) -->
+					<user-service id="userService">
+						<!-- No formulário o usuário deverá ser admin e a senha admin também, e sua permições são de acessar tudo que um ROLE_ADMIN pode -->
+						<user name="admin" password="admin" authorities="ROLE_ADMIN"/>
+					</user-service>
+				</authentication-provider>
+			</authentication-manager>
+			
+</beans:beans>

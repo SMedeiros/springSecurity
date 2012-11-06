@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="springSecuritySample" basedir="." default="run">
+
+	<property name="webinf.dir" value="Web/WEB-INF" />
+	
+	<target name="run">
+		<mkdir dir="${basedir}/target" />
+		<war destfile="${basedir}/target/springSecuritySample.war" webxml="${webinf.dir}/web.xml" update="true">
+			<classes dir="build/classes" />
+			<fileset dir="Web">
+				<exclude name="WEB-INF/web.xml" />
+			</fileset>
+		</war>
+	</target>
+
+
+</project>

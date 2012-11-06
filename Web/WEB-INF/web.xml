@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>springSecuritySample</display-name>
+  <filter>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <context-param>
+    <description>Localização dos arquivos de configuração de contexto do spring.</description>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+			/WEB-INF/spring/spring-security.xml
+		</param-value>
+  </context-param>
+  <servlet>
+    <description>Front controller responsável por delegar todas as requisições recebidas aos devidos @Controllers</description>
+    <servlet-name>springDispatcherServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <description>
+      	Arquivo de configuração do dispatcher do spring.Se não for definido o padrão fica _nomeServlet-servlet.xml
+      	Nesse caso seria procurado por /WEB-INF/springDispatcherServlet-servlet.xml.
+      </description>
+      <param-name>contextConfigLocation</param-name>
+      <param-value> /WEB-INF/spring/spring-context.xml </param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>springDispatcherServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <listener>
+    <description>Listener responsavel por iniciar o container do Spring</description>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+</web-app>
